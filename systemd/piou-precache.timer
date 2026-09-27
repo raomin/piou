@@ -1,0 +1,15 @@
+[Unit]
+Description=Monthly refresh of the offline bird photo cache
+
+[Timer]
+# BirdNET's range filter is week-of-year dependent, so the plausible species
+# set drifts with migration. A monthly refresh keeps the offline cache
+# tracking the seasons; each run only fetches what is newly plausible.
+OnCalendar=monthly
+# Spread the load rather than hitting image providers at midnight on the 1st.
+RandomizedDelaySec=6h
+# Catch up after downtime instead of skipping a whole month.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

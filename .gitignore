@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.tmp
+# generated previews / scratch renders
+*.png
+!doc-fr/**/*.png

@@ -1,0 +1,52 @@
+# Settings that differ from BirdNET-Go's stock config.yaml.
+# The stock file is generated on first run at ~/.config/birdnet-go/config.yaml;
+# merge these values into it (a small Python/yq patch is the safest way).
+#
+# Everything not listed here is left at the stock default on purpose - see the
+# guide's troubleshooting section for what happened when it wasn't.
+
+main:
+  name: PiouPiou
+
+birdnet:
+  locale: fr              # French common names on the panel
+  latitude: 43.9509       # example: Avignon - set YOUR coordinates
+  longitude: 4.8074
+  locationconfigured: true
+  # threshold 0.7, sensitivity 1.0, overlap 1.5, threads 0 : stock
+
+realtime:
+  audio:
+    sources:
+      - name: "Micro I2S INMP441"
+        device: birdmic     # the ALSA PCM from asound.conf - "sysdefault" does NOT work
+        gain: 0             # gain is applied in ALSA (32-bit domain), not here
+  log:
+    enabled: true           # plain-text log of EVERY detection: birdnet.txt
+    path: birdnet.txt
+  telemetry:
+    enabled: false
+  privacyfilter:
+    enabled: true
+    confidence: 0.7         # stock is 0.05, which discards nearly every
+                            # detection whenever someone is talking nearby
+
+logging:
+  modules:
+    access:    { enabled: false }   # per-request logging is the noisiest writer
+    telemetry: { enabled: false }   # on an SD card, fewer writes matter
+
+notification:
+  push:
+    enabled: true
+    providers:
+      - type: script
+        enabled: true
+        name: piou-events
+        command: /opt/piou/bin/birdnet-event.sh
+        input_format: both
+        timeout: 10s
+        filter:
+          types: ["detection"]
+          priorities: []
+          components: []

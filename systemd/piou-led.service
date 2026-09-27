@@ -1,0 +1,36 @@
+[Unit]
+Description=PiouPiou status LED (breathing, GPIO26)
+Documentation=file:/opt/piou/bin/piou_led.py
+# Started as early as the boot allows: the LED is the only sign the box is
+# alive, so it should not wait behind the network or BirdNET-Go's model load
+# (which is ~40s of this machine's startup). DefaultDependencies=no drops the
+# implicit ordering against basic.target; all it truly needs is a mounted
+# root, because it writes to sysfs.
+DefaultDependencies=no
+Requires=local-fs.target
+After=local-fs.target
+Before=shutdown.target
+Conflicts=shutdown.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/piou/bin/piou_led.py
+Restart=always
+RestartSec=2
+# Never let a status light compete with inference for CPU.
+Nice=15
+IOSchedulingClass=idle
+
+# Root is needed to write /sys/class/pwm, so constrain everything else.
+NoNewPrivileges=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/sys/class/pwm /sys/devices
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX
+MemoryMax=64M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,25 @@
+[Unit]
+Description=Pre-cache regional bird photos for offline display
+Documentation=file:/opt/piou/bin/piou_precache.py
+# Needs BirdNET-Go's API for both the range-filter species list and the image
+# proxy. Deliberately After= rather than Requires=: if BirdNET-Go is down the
+# script reports it and exits cleanly, which is better than the timer unit
+# failing and needing a reset.
+After=network-online.target birdnet-go.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=piou
+Group=piou
+WorkingDirectory=/opt/piou/bin
+ExecStart=/opt/piou/venv/bin/python /opt/piou/bin/piou_precache.py --delay 2.0
+# Each cache miss makes BirdNET-Go fetch from an upstream provider on our
+# behalf, so this must never compete with live detection for CPU or IO.
+Nice=15
+IOSchedulingClass=idle
+# A full year's species set is larger than any single week's; allow slack.
+TimeoutStartSec=3h
+
+[Install]
+WantedBy=multi-user.target

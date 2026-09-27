@@ -1,0 +1,4 @@
+# /etc/sudoers.d/piou-poweroff  (mode 0440, validate with: visudo -c -f <file>)
+# Lets the display service power the box down from the push button.
+# Exactly one command, full path, no wildcards.
+piou ALL=(root) NOPASSWD: /usr/bin/systemctl poweroff

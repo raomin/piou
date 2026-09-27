@@ -1,0 +1,24 @@
+[Unit]
+Description=BirdNET-Go realtime bird sound identification
+Documentation=https://birdnet-go.dev
+After=network-online.target sound.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=piou
+Group=piou
+# 'audio' for ALSA access to the I2S capture device
+SupplementaryGroups=audio
+WorkingDirectory=/var/lib/birdnet-go
+ExecStart=/usr/local/bin/birdnet-go serve
+Restart=on-failure
+RestartSec=10
+# The 170 MB binary plus the TFLite model is heavy for a 1 GB Pi 3;
+# give the OOM killer a nudge away from this process.
+OOMScoreAdjust=-200
+Nice=-5
+LimitNOFILE=8192
+
+[Install]
+WantedBy=multi-user.target

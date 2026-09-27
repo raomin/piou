@@ -1,0 +1,30 @@
+[Unit]
+Description=PiouPiou TFT display (BirdNET-Go detections on NV3030B)
+Documentation=file:/opt/piou/display/piou_display.py
+# The panel shows a "BirdNET-Go hors ligne" standby screen when the detector
+# is down, so this is deliberately only a soft dependency: the display should
+# come up and stay up even if BirdNET-Go is stopped or crash-looping.
+After=network.target birdnet-go.service
+Wants=birdnet-go.service
+
+[Service]
+Type=simple
+User=piou
+Group=piou
+# spi -> /dev/spidev0.0, gpio -> /dev/gpiochip0 for DC/RES/BLK
+SupplementaryGroups=spi gpio
+WorkingDirectory=/opt/piou/display
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/piou/venv/bin/python /opt/piou/display/piou_display.py
+Restart=always
+RestartSec=5
+# Blank the panel and kill the backlight on stop rather than leaving a
+# stale detection frozen on screen.
+KillSignal=SIGTERM
+TimeoutStopSec=15
+# This must never be the process that starves BirdNET-Go of CPU.
+Nice=10
+IOSchedulingClass=idle
+
+[Install]
+WantedBy=multi-user.target

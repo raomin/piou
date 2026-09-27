@@ -1,0 +1,21 @@
+# Append to /boot/firmware/config.txt (Raspberry Pi OS Bookworm/Trixie).
+# Also change the existing "dtparam=audio=on" line to "dtparam=audio=off"
+# so the I2S microphone becomes sound card 0.
+
+# >>> piou hardware >>>
+[all]
+# --- SPI for the TFT (SCLK GPIO11, MOSI GPIO10, CE0 GPIO8) ---
+dtparam=spi=on
+
+# --- I2S MEMS microphone (INMP441): CLK GPIO18, FS GPIO19, DIN GPIO20 ---
+dtparam=i2s=on
+dtoverlay=googlevoicehat-soundcard
+
+# --- TFT backlight: drive GPIO22 high at boot ---
+gpio=22=op,dh
+
+# --- Button's embedded status LED on GPIO26 ---
+# GPIO26 has no hardware PWM block (only 12/13/18/19 do), so use the kernel's
+# hrtimer software PWM. Driving it from userspace instead flickers visibly.
+dtoverlay=pwm-gpio,gpio=26
+# <<< piou hardware <<<
