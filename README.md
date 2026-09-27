@@ -112,6 +112,9 @@ in the guide's troubleshooting section.
 
 ## License
 
-*Choose one before publishing — MIT is a good fit for a hardware/software
-build like this. Note that BirdNET-Go and the BirdNET model carry their own
-licenses (the model is CC BY-NC-SA 4.0, i.e. non-commercial).*
+This project is released under the [MIT License](LICENSE).
+
+The things it builds on carry their own terms: BirdNET-Go is licensed
+separately by its author, and the **BirdNET model is CC BY-NC-SA 4.0 —
+non-commercial**. Bird photos come from Avicommons and Wikimedia Commons
+under their respective licenses.
